@@ -1,4 +1,4 @@
-# _*_ coding:utf-8 _*_
+# _*_ coding : utf-8 _*_
 from html.parser import HTMLParser
 import requests
 
@@ -8,16 +8,21 @@ def get_image_name(url):
     img_type=strList[-1].split('.')[-1]
     print(img_type)
     return strList[-1],img_type
-    
+
+
 def save_img(url):
-    res = requests.get(url)
-    name,img_type=get_image_name(url)
+    urlSplit = url.split('://')
     img_path = ""
-    if(img_type=='jpg'):
-        img_path = './img/'+name
-        with open(img_path, 'wb') as f:
-            f.write(res.content)
+    if len(urlSplit) > 1:
+        name, img_type = get_image_name(url)
+
+        if (img_type == 'jpg'):
+            res = requests.get(url)
+            img_path = './img/' + name
+            with open(img_path, 'wb') as f:
+                f.write(res.content)
     return img_path
+
     
 
 class MyParser(HTMLParser):
@@ -43,6 +48,8 @@ class MyParser(HTMLParser):
                     img_path = save_img(value)
                     if(img_path!=""):
                         self.lableList.append((1,img_path))
+                        print('img: ',value)
+                    else:
                         print('img: ',value)
         
 # my = MyParser()
